@@ -213,6 +213,9 @@ x+y
 y+x
 #We can also append other static strings, like for e.g.
 x+"abc "+y+' xyz'
+#The following would give an error
+x-y #As we cannot deduct a string from another string
+
 #Upper and lower case conversion (NOTE that of your string contains any special chars, they won't be converted)
 x.upper()
 x.lower()
@@ -273,11 +276,8 @@ x.replace("Mu","Bo") #First include what part of substring to replace and then t
                      
 #Splitting strings based on char postion, e.g.
 x=" Mumbai is a great city "                     
-x.split("a") #There will be 4 substrings from this, the way it works is that wherever it gets "a" in the main
-             #string, it will split the main string from there
-
-#The following would give an error
-x-y #As we cannot deduct a string from another string
+x.split("a") #There will be 4 substrings from this, the way it works is that wherever it will  get an "a" in the
+             #main string, it will split the main string from there
 
 #Comparing strings with the double equal to operator
 x+y == y+x #Note that this will be false as MumbaiBangalore is not equal to BangaloreMumbai
