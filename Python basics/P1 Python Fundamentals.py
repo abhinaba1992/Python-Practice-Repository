@@ -211,10 +211,73 @@ type((len(x),len(y))) #This would give us a tuple
 #String appending
 x+y
 y+x
+#We can also append other static strings, like for e.g.
+x+"abc "+y+' xyz'
+#Upper and lower case conversion (NOTE that of your string contains any special chars, they won't be converted)
+x.upper()
+x.lower()
+#IF we want to capitalize the first letter of a word, we use the following function
+x='mumbai'
+x.capitalize()
+
+#Aligning or justifying the character
+#for right alignment
+x="Mumbai"
+x.rjust(30) #This means that the text will be right justified by 24 characters, 24 chars coz there are already
+            #6 characters in our string and the rjust function will append the rest of the characters so as
+            #to appear to a total number of 30 characters as mentioned in the function.
+            #NOTE: if the number of characters in our string is more than or equal to what we mentioned in the
+            #rjust function, then nothing is going to happen to our texts
+
+#for left alignment
+x.ljust(30) #The same number of chars would be appended from the right side this time
+            
+#for centre alignment
+x.center(7) #This is where the spacing needs to be given dependeing upon the no. of chars we have in our string
+            #that is here as we have 6 chars for Mumbai, if we say x.center(7), we would get a single spacing at
+            #the beginning like ' mumbai', however, if we do x.center(8), we would get something like ' mumbai '
+            #Thus it's important to keep in mind the no. of chars in your string var before centre aligning them
+
+x.center(8) #This would give a more appropriate output
+
+#If we want to increase the number of chars by more amt. in our string, we may do so in the following ways
+x.center(20)
+#or
+x.center(50)
+
+#Stripping off spaces or special chars from our string
+#spaces from left side
+x="             Mumbai"
+x.lstrip()
+#right strip
+x="Mumbai             "
+x.rstrip()
+#Stripping from both ends
+x="            Mumbai              "
+x.strip()
+#We can also strip special functions if our strings contain the same using lstrip,rstrip and strip functions
+x=" Mumbai   \n"
+x.strip()
+x.lstrip()
+x.rstrip()
+
+#We can use the print function for printing a variable
+x='Mumbai'
+print(x)
+
+#We can use the replace function for replacing a string
+x='Mumbai'
+x.replace("Mu","Bo") #First include what part of substring to replace and then text that will replcae the 
+                     #aforesaid part
+                     
+                     
+#Splitting strings based on char postion, e.g.
+x=" Mumbai is a great city "                     
+x.split("a") #There will be 4 substrings from this, the way it works is that wherever it gets "a" in the main
+             #string, it will split the main string from there
 
 #The following would give an error
 x-y #As we cannot deduct a string from another string
 
 #Comparing strings with the double equal to operator
 x+y == y+x #Note that this will be false as MumbaiBangalore is not equal to BangaloreMumbai
-
