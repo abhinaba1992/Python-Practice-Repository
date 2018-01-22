@@ -277,7 +277,39 @@ x.replace("Mu","Bo") #First include what part of substring to replace and then t
 #Splitting strings based on char postion, e.g.
 x=" Mumbai is a great city "                     
 x.split("a") #There will be 4 substrings from this, the way it works is that wherever it will  get an "a" in the
-             #main string, it will split the main string from there
+             #main string, it will split the main string from there.
+             #Also, the above would return a type of class list.
+
+#Subsetting string with indices (NOTE that this is not only applicable for strings but most other data structures 
+#list, tuple etc)
+
+#The counting or the index starts from 0			 			 
+x='Mumbai'
+x[2:4] #This will give us two characters starting from index 2 to index 3
+       #The end index is always upto b-1
+
+#If we want to go from a particular index to the last index, we can do the following
+x[2:] #Starting from the 2nd index till the end or (n-1)th index
+
+#If we want to start from the starting index till a number of chars or (n-1)th index, we do the following
+x[:4]
+
+#The below would make sure that the we start subsetting from behind the string, both the numbers/chars at 1st and last 
+#Position are denoted by the index 0, while the ones following from the left side are indexed as 1,2,3... , the ones from
+#the right is indexed by -1,-2,-3
+x[:-3] #So this will basically choose from the 4th char from behind till the 0th char at the beginning
+
+#The below would subste the string from 4th character in the end till the end char in the string
+x[-3:]
+	   
+#subsetting from the 3rd index in the begining till the 4th index at the end
+x[3:-3]	   
+			 
+#Subsetting from the 7th char from the end till the 3rd char from the end
+x[-6:-2]		
+#However if we do x[-2:-6], we would get an empty string coz -2 is after -6	 and 
+#the starting point from which the subsetting happens cannot be before the end
+
 
 #Comparing strings with the double equal to operator
 x+y == y+x #Note that this will be false as MumbaiBangalore is not equal to BangaloreMumbai
