@@ -277,39 +277,159 @@ x.replace("Mu","Bo") #First include what part of substring to replace and then t
 #Splitting strings based on char postion, e.g.
 x=" Mumbai is a great city "                     
 x.split("a") #There will be 4 substrings from this, the way it works is that wherever it will  get an "a" in the
-             #main string, it will split the main string from there.
-             #Also, the above would return a type of class list.
+             #main string, it will split the main string from there
 
-#Subsetting string with indices (NOTE that this is not only applicable for strings but most other data structures 
-#list, tuple etc)
 
-#The counting or the index starts from 0			 			 
-x='Mumbai'
-x[2:4] #This will give us two characters starting from index 2 to index 3
-       #The end index is always upto b-1
+#Counting the total number of times a substring occurs in a string
+#e.g.
+z="Bombay is Bo"             
+z.count("Bo") #This will return 2
+#Please note that the above operation is case sensitive             
+#That means if we try and search "bo" instead of "Bo" in the above scenario, then we would not get desired
+#results
+#e.g.
+z.count("bo") #This will return 0
+#In case, we want to check for all occurences of a particular string, we can do something like the following
+z.lower().count("bo") #This would return 2
+#So by converting the char string to upper or lower case, we can achieve the given req.              
 
-#If we want to go from a particular index to the last index, we can do the following
-x[2:] #Starting from the 2nd index till the end or (n-1)th index
 
-#If we want to start from the starting index till a number of chars or (n-1)th index, we do the following
-x[:4]
-
-#The below would make sure that the we start subsetting from behind the string, both the numbers/chars at 1st and last 
-#Position are denoted by the index 0, while the ones following from the left side are indexed as 1,2,3... , the ones from
-#the right is indexed by -1,-2,-3
-x[:-3] #So this will basically choose from the 4th char from behind till the 0th char at the beginning
-
-#The below would subste the string from 4th character in the end till the end char in the string
-x[-3:]
-	   
-#subsetting from the 3rd index in the begining till the 4th index at the end
-x[3:-3]	   
-			 
-#Subsetting from the 7th char from the end till the 3rd char from the end
-x[-6:-2]		
-#However if we do x[-2:-6], we would get an empty string coz -2 is after -6	 and 
-#the starting point from which the subsetting happens cannot be before the end
+#We can also find the index of the first occurance of a sub-string inside a string
+#e.g.
+z.find("B") #We would get a 0 here since the first occurance of "B" is at index 0
+#Note that just like count function, even find function is case sensitive
 
 
 #Comparing strings with the double equal to operator
 x+y == y+x #Note that this will be false as MumbaiBangalore is not equal to BangaloreMumbai
+
+
+#Other comparison operators and their operations (NOTE: All of them Return a boolean result)
+x=34
+y=32
+
+#Comparison "=="
+x==y 
+
+#Comparison not equal to "!="
+x!=y 
+
+#Comparison greater than
+x>y
+
+#Comparison lesser than
+x<y
+
+#Comparison greater than equal to
+x>=y
+
+#Comparison lesser than equal to
+x<=y
+
+
+#Comparing occurance of strings (This returns a boolean result)
+#NOTE that this operation is also applicable to other data structures like  list, tuple etc
+x="as"
+y="assignment"
+x in y 
+
+#Comparison for non-occurance (This is used to check if a sub-string is non occurning in a string or not)
+#(This also returns a boolean result)
+x not in y
+
+
+#Note that comparison operations like <,> etc also works with strings. these comparison between strings,
+#give result based on dictionary order as defined in the local OS
+#(It basically depends on the alphabatical order of the strings and length of the string)
+#for e.g.
+x<y
+#or
+y<x
+#or
+x<=y
+#0r
+x>=y
+#The above comparisons would work even if x and y are strings based on the aforesaid logic 
+
+
+#LISTS
+#List is basically a heterogeneous data structure that can contain items of various types
+#It is also an ordered collection
+x=[1,2,3,70,-10,0,99,"a","b","c"]
+x
+
+#List subsetting just like string subsetting
+#e.g.
+x[3:7]
+#and other subsetting operations would be pretty much same to the one's shown below for string subsetting
+
+#We may also do a step wise subsetting like a loop counter by increasing the count dynamically, this is known
+#as step
+#e.g.
+x[3::2] #This will begin at the the index 3 and end at the end of the string while incrementing 2 objects/chars
+        #at a time.
+        
+#We can also do something like
+x[3:-3:2] #This will begin at index 3 and end at the 3rd index from the back, while incrementing 2 objects/chars       
+          #at a time.
+
+#We can also try something like the following
+x[::-1]  #This will simply take all the objects/chars involved in your list and iterate in reverse order          
+#or          
+x[::-2] #In this case the iteration would happen with 2 chars and would print the entire list in reverse
+
+#We can also directly refer to the objects of the list directly through index in the following way
+#e.g.
+x[2]
+
+x[1]
+
+x[9]
+
+x[20] #This would give a list out of range error as there is no object at the 20th index of the list
+
+x[-1]
+
+x[-3]
+
+x[-5]
+
+#Reversing the string
+x.reverse() #Note that this would not only reverse an instance of the string, but would change the value
+            #of x
+            
+#So if we try and print x now, we would find that the values of list x have been reversed        
+x            
+ 
+#Following is an example of mutability operation: that is we can change the value of any objects of a string
+#by referring to them directly
+#e.g.
+x[2]="Abhi"
+x
+
+#We can also do the same thing like the following
+x[2:4]="b" #here b will be assigned at multiple indexes, however the way it works is that it will merge the
+           #the values in the index 2 and 3 into one index and then add b to it's value, all other indexes 
+x          #are adjusted accordingly
+
+
+#We are now trying to replace the objects of a list with an array of strings
+#e.g.
+x[2:4]=["abc","def","xyz"]
+#So what the above code will do is that it would start apending the array of strings from index 2 to index 
+#(4-1) that is index 3 and it would add "abc","def" and "xyz" to the list while shifting the list one place
+#right
+ 
+#If we want to append a new object at the end of the list, we can do soething like 
+x.append("new")
+x
+ 
+#If we wish to append a new list inside a list, we do the following
+x.append([1,2,3])
+ 
+#In case you wanna unravel the individual elements in a list and then append them to an existing list,
+#We suggest you do the following
+x.extend([1,2,3]) #This would extract out the elements of the list to append and then append them to the
+x                   #existing list
+                   
+                   
