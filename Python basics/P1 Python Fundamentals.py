@@ -21,6 +21,9 @@ enclosed in a multiline comment sample
 #Python files are stored with the extension py
 #var names cannot start with a number or cannot have spaces
 #We use libraries in Python that contains piece of predefined codes or functions that can be used in our code (much like packages in R)
+#In Python, blocks of codes are defined by the indentations in the code
+#Also, whenever we wish to start a code block with indentation in Python, we must begin it with a colon for the
+#interpreter to assume and understand that what follows is a part of a block (See line no. 542 for reference)
 
 
 #SIMPLE VARIABLE ALLOCATION
@@ -493,3 +496,109 @@ for city in cities:
 #or elements for an iterable data. e.g.
 a=range(8)
 a
+
+
+#Showing the looping capabilities of Python
+temp_a = range(1,8,2) #Here the range would help us define elements like 1,3,5 and 7 i.e. elements from 1 to 8
+for i in temp_a:      #hopping by 2 elements or in step sizes of 2
+    print(i)
+
+#Doing modular operations in a loop for e.g.
+x=range(8)
+
+x_mod_2=[] #Assigning a blank list
+
+for a in x:
+	x_mod_2.append(a%2) #looping through the empty list and appending modular values
+   print(a)
+   print(x_mod_2)
+x_mod_2 #We would bascially get a series of 0 and 1 depending upon wether the no. is even or odd
+    
+#Trying to type cast it to a list we get the following
+print(list(x))
+
+
+#List comprehension for modular operation (The below would do the same thing as demonstrated above, the only
+#difference is the way in which the operation is being done)
+x_mod_2=[]
+x_mod_2=[a%2 for a in x]
+x_mod_2
+
+
+#We can now see some basic mathematical functions in Python
+#[This has to be ran from console located down right]
+import math #for importing math related functions
+
+x_ls2=[math.log(a) for a in x if a%2 !=0]
+print(x_ls2)
+#here its like whenever the number is an odd number, then take a log of that number, else we take the modular
+#of the same
+#basically, if a number in the range x (which is from 0 to 7) when modular divided by 2 if keeps a remainder
+#0, then it's added to the list, else its not added. So, for the first element we get 0%2 is 0 so it wont be 
+#added to the list x_ls2, 2ndly 1%2 is 1 which is not equal to 0 so log(1) would be added to the list and so
+#on and so forth...
+
+#Defining user defined function in R
+#Creating a function my_func
+def my_func(x):
+    if x%2!=0:
+        return(math.log(x))
+    else:
+        return(x)
+
+#Calling the function
+my_func(3)
+
+#Calling the function in iteration
+x_ls3=[my_func(a) for a in x]
+x_ls3
+
+
+#Passing default vaues to an user defined function
+def mysum(x=10,y=10):
+	return(2*x+3*y)
+
+#Calling the function so as to get the default operation
+print(mysum())
+
+#Calling the function by overwrite the formal parms with actual params
+print(mysum(2,3))
+
+#Overwriting the first value while calling the function
+#Note that it's not possible to overwrite other values than the first in the following way
+print(mysum(2))
+
+#Calling the function by passing one of the params
+#The below would give an error since it would not be able to determine which param to overwrite
+mysum(,4)
+
+#If we wish to overwrite any one of the params, we can do the following
+mysum(x=4)
+#or
+mysum(y=3)
+
+#Calling with a negative value
+print(mysum(y=-10))
+
+#Overwriting both values that are called
+print(mysum(x=100,y=1))
+#Also, note that in above situation, it's not mandatory to have an order that is we can also write something 
+#like
+print(mysum(y=100,x=1)) #Since we are explicitly mentioning the vars here 
+
+
+#Arguments set in function with tuple and dictionary
+def myfunc2(*args,**kwargs):
+    print(type(args))
+    print(type(kwargs))
+    for a in args:
+        print(a)
+    for k,v in kwargs.items():
+        print((k,v))
+        
+myfunc2(1,2,3,4,fruit='apple',cuisine='Indian')        
+#Dictionary has key value pairs like shown for fruit and cuisine
+#This type of function signature or definition is useful when the number of params in a function, keeps on 
+#increasing over time. Also, anything that is not in a key value format, is treated as tuple
+
+    
