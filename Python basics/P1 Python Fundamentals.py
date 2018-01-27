@@ -431,5 +431,65 @@ x.append([1,2,3])
 #We suggest you do the following
 x.extend([1,2,3]) #This would extract out the elements of the list to append and then append them to the
 x                   #existing list
-                   
-                   
+
+#We can also extend a list in the following way
+x=x+[1,2,3] #This would work in the same way as extend works
+x      
+#We can also insert other elements at a particular index in the following ways
+x.insert(2,"insert") #This would add the object at a particular index while shifting the entire list by 
+x                    #one index towards right
+
+#Now, list is of LIFO type data structure, so we can perform actions like Pop and all on the list
+#e.g.
+x.pop() #This will give us the last element in the list
+x
+
+#Alternately, we can also pop an element based on the positioon or index in the following way
+x.pop(3) #this would pop the element at the third index in the list
+x
+
+#We can also remove the contents in a list by the exact element name, for e.g.
+x.remove("insert") #This would remove the element with the same name, and the entire list would shift to
+x                  #one place left, note that in case there are two elements With the exact same name,
+                  #then the first one of them will be removed
+
+#Sorting the elements of a list (Note that sorting doesn't work with lists having more than one type of objects
+#or elements to compare with)
+y=[24,66,12,45,67,15]                  
+y.sort()                  
+y
+
+#We can also sort in descending order in the following way
+y.sort(reverse=True)
+
+#In case we want to reverse the elements of a string, we can do the following
+y.reverse()
+y
+
+#Loops in Python
+cities=["Delhi","Mumbai","Kolkata","Chennai"]
+#So, suppose we wanna check the length of strings in the list cities
+#We can do something like
+len(cities[0])
+len(cities[1])
+len(cities[2])
+len(cities[3])
+
+#However, the above approach is not a scalable solution as if there is a large no. of cities in the list,
+#the above approach won't work, in such a case, we do the following
+
+
+#Looping example
+#e.g. 1 (here we are iterating on the indices)
+for i in [0,1,2,3]:
+    print(len(cities[i]))
+
+#e.g. 2 (here we are iterating on the values)
+for city in cities:
+   print(len(city))    
+
+
+#List comprehension using for loops, the range function here helps to dynamically allocate memory for objects
+#or elements for an iterable data. e.g.
+a=range(8)
+a
