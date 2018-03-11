@@ -312,3 +312,7 @@ np.random.normal(0,1)
 
 #So, we see various ways of using np.random, there are also some other ways of using np.random and the
 #above examples, do not cover all the scenarios
+
+
+#You can also use a seed for your random selection, say for e.g.
+np.random.seed(7)
