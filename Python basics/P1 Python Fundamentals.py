@@ -599,6 +599,4 @@ def myfunc2(*args,**kwargs):
 myfunc2(1,2,3,4,fruit='apple',cuisine='Indian')        
 #Dictionary has key value pairs like shown for fruit and cuisine
 #This type of function signature or definition is useful when the number of params in a function, keeps on 
-#increasing over time. Also, anything that is not in a key value format, is treated as tuple
-
-    
+#increasing over time. Also, anything that is not in a key value format, is treated as tuple   
