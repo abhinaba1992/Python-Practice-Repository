@@ -120,6 +120,14 @@ a[(a>2) & (a<5)] #and operation
 X=np.array([[1,2],[3,4]])
 Y=np.array([[5,6],[7,8]])
 
+#Note that whatever array is larger, the final shape would be according to that
+#e.g.
+L=np.array([[1,2],[3,4]])
+M=np.array([[5,6]])
+
+L+M, L-M, L*M, L/M
+M+L, M-L, M*L, M/L
+
 #Addition
 X+Y
 #We can also use numpy add function to do the same
