@@ -199,4 +199,3 @@ np.sum(X,axis=1) #Across rows
 v=([1,0,1]) #Defining an array V
 np.tile(v,(4,1)) #Creating 4 copies having the same elements
 np.tile(v,(4,2)) #Creating 4 copies having twice the number of elements
-
