@@ -207,3 +207,39 @@ np.sum(X,axis=1) #Across rows
 v=([1,0,1]) #Defining an array V
 np.tile(v,(4,1)) #Creating 4 copies having the same elements
 np.tile(v,(4,2)) #Creating 4 copies having twice the number of elements
+
+
+#--------------------------------------------------------------------------------------------------
+#Panda Data Frames
+import pandas as pd
+#This is one of the most important libraries in Python, this is used for data manipulation & Handling
+#and manipulating data
+
+Cities=["Delhi","Mumbai","Kolkata","Chennai"]
+Code=[11,22,33,44]
+
+
+mydata=list(zip(Cities,Code))
+#We would get a cross product of cities and pin codes
+
+#Creating a data frame in Panda
+df=pd.DataFrame(data=mydata,columns=["cities","codes"])
+df #We would get a data frame with two cols
+#Also, if we din't give any column name, it just assumes 0 and 1 to be it's column name
+
+
+#Writing a data frame to a file (CSV file)
+df.to_csv("mydata.csv",index=True,header=True)
+#Note that we should be careful while writing the file with index (or row numbers) because if we are trying to
+#read back the same file again, then the index column would be made into a new column which is unecessary.
+
+#Reading a data frame from a CSV file
+df_temp=pd.read_csv("mydata.csv")
+
+df_temp #Here we would find that the index column has formed a new column and also a new index/rowname column
+        #is developed, so it's advisable not to use indexing while writing the data into the path
+        
+#Excel writer
+writer=pd.ExcelWriter("mydata.xlsx")       
+df.to_excel(writer,"Sheet1",index=True)
+df.to_excel(writer,"Sheet2")
