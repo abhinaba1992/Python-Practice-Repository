@@ -243,3 +243,141 @@ df_temp #Here we would find that the index column has formed a new column and al
 writer=pd.ExcelWriter("mydata.xlsx")       
 df.to_excel(writer,"Sheet1",index=True)
 df.to_excel(writer,"Sheet2")
+
+
+#Reading a file from a location predefined location
+myfile=r'C:\Users\Abhinaba\Desktop\Edvancer Materials\Python\Data\bank-full.csv'
+#Choosing the selected cols we want and specifying the seperator
+bd=pd.read_csv(myfile,usecols=["age","job","marital","balance"],sep=";")
+
+#Checking the data type of bd
+type(bd) #This will return pandas.core.frame.DataFrame
+
+#Checking the type of col or series
+type(bd['job']) #This will return pandas.core.frame.Series
+
+#Seeing all the columns of a data set
+bd.columns
+
+#Seeing the top 10 rows
+bd.head(10)
+
+#Seeing the last 10 rows
+bd.tail(10)
+
+#Creating cross tabulation (Margins here is used to get the sum)
+pd.crosstab(bd["job"],bd["marital"],margins=True)
+#If you dont want summation, just make margins equal to false
+pd.crosstab(bd["job"],bd["marital"],margins=False)
+
+
+#Aggregating by a feature value in cross tabulation
+pd.crosstab(bd["job"],bd["marital"],values=bd["balance"],aggfunc=np.mean)
+
+#Doing group by operation in Python
+bd.groupby("job")["balance"].mean()  #equi. to: select mean(balance) as bmean from <table name> group by job
+
+
+#Each row in a data frame is known as a series, thus multiple series in a data frame combine together to give
+#a data frame.
+
+#Value counts for multi level categorical data
+bd.groupby("job")["marital"].value_counts()  #equi. to: select job, count(marital) as mcnt from <table name> group by job,marital
+
+#Value counts for single tier categorical data
+bd["marital"].value_counts() #Equi. to select marital, count(martical) as mcnt from <table name> group by marital
+
+#Mean for single tier numerical data
+bd["age"].mean()
+#or
+bd["balance"].mean()
+
+
+#Seeing the data types of all the cols in data frame
+bd.dtypes
+
+#Note that the data type of a particular feature in Python is decided by looking upon the first few thousand rows
+#of a feature, anything which is integer is denoted as int64, while others are denoted as object. Note that in case
+#We have an int feature that contain a NAN value in first few thousand rows, in that case, we will get a object data
+#type even for an int column, which won't be a case if the NAN value lies much later in a data frame. So, its always
+#a good idea to cross check the data types in a data frame because it looks only at the top few thousand records
+
+#We can also check the data type of a particular feature in the following way
+bd["marital"].dtype
+#We will get dtype('o') that denotes that it's an object type
+
+
+#We can also verify if a feature belongs to a particular data type in the following way
+bd["marital"].dtype=='O' #This will return True (would return false if marital was of some other data type)
+
+
+#gives us a description of the numeric columns
+bd.describe()
+#Find describe by specific columns
+#1 cols
+bd["age"].describe()
+#or way 2
+bd.age.describe() #This syntax is good only for enquiring the result and not for assignment
+
+#multiple cols
+bd[["age","balance"]].describe()
+#In the same way we can use other functions like mean, median, mode, max, min, sd etc
+
+
+#Subsetting
+#Subsetting fields from a data set based on column names
+bd[["age","balance"]]
+
+#Subsetting based on data types (We will get all the fields that are categorical in nature)
+bd_cat_data=bd.select_dtypes(['object'])
+#Seeing the same
+bd_cat_data.columns #We will get the cols with object data type in this data set
+
+
+#Using a for loop for doing a value count for each of my categorical variable, we do the following
+for c in bd_cat_data.columns:
+    print(bd[c].value_counts())
+#We will get counts of all the categorical variables for all the cols
+    
+#Using for loop to get the number of unique categorical variables for each cols
+for c in bd_cat_data.columns:
+    print(c,":",bd[c].nunique())
+#nunique function gives us the number of unique categorical variables for a feature, it can also be used
+#directly for a column    
+
+
+#to get the count of rows and cols in Python, we use shape
+bd.shape
+
+
+#To get the median of all the numerical cols, we use the following
+bd.median()
+
+
+#Reimporting the bank data with all cols
+bd=pd.read_csv(myfile,sep=";")
+bd
+
+
+#Multi tier group by operations (similar to the ones shown earlier above)
+bd.groupby(['housing','loan'])["age","balance"].mean()
+
+#with value countss for categorical variables
+bd.groupby(['housing','loan'])["education"].value_counts()
+
+
+#Doing different operations using group by clause for different fields
+bd.groupby(['housing','loan']).agg({'age':'mean','duration':'max','balance':'sum'})
+#Whatever agg functions we use, must come under the numpy package, like for eg mean, max and sum should fall
+#under numpy, also aggregate function consumes a dictionary where key is the col name and value is the function
+#name
+
+
+#Plotting values of a field
+bd["balance"].plot()
+
+
+#Using ggplot for data Vizulaistion
+#    conda install -c https://conda.binstar.org/bokeh ggplot
+from ggplot import *
+
