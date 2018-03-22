@@ -378,6 +378,28 @@ bd["balance"].plot()
 
 
 #Using ggplot for data Vizulaistion
-#    conda install -c https://conda.binstar.org/bokeh ggplot
+#run "pip install ggplot" from administrator command prompt
 from ggplot import *
 
+
+#plotting using ggplot
+ggplot(aes(x='age',y='balance'),data=bd)
+
+ggplot(aes(x='age',y='balance'),data=bd)+geom_point()+ggtitle('Scatter Plot')
+
+ggplot(aes(x='age',y='balance',color='marital'),data=bd)+geom_point()+ggtitle('Scatter Plot')
+
+
+
+#We have a data set called meat that is available through the ggplot library
+meat
+
+#Plotting ggplot graphs using data set meat to understand the below functions
+ggplot(aes(x='date',y='beef'),data=meat)+\
+geom_line()+\
+geom_point()#+\
+#stat_smooth(color="blue",method="loess",span="0.3")
+
+
+#Boxplots
+ggplot(aes(y="age",x="education"),data=bd)+geom_boxplot()
