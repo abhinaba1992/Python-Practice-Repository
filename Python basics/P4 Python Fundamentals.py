@@ -113,6 +113,7 @@ df                         #axis=0
 
 #However, we can also directly delete a row in a data frame by doing the following
 df.drop("color",axis=1,inplace=True)                         
+df
                          
 #Dropping a row
 df=df.drop([3],axis=0)
@@ -121,3 +122,106 @@ df
 #Subsetting a data frame
 df=df[df["Type"]=="B"]
 df
+
+
+#If we want to get the indexes, we do the following
+df.index
+
+#Creating a new column col2
+df['col2']=[3,4]
+df
+
+#Resetting the indexes of a data frame
+df.reset_index(drop=True) #This will reset the row indexes in the data frame
+                          #If we do drop=False, then what happens is that even though the index is reset,
+                          #the old index is presereved in a column called index
+                          
+                          
+#Selecting a row in a data frame using iloc (iloc is actually index location)
+df.iloc[0]   #This will fetch the row at index 0
+
+
+#Selecting a specific row with a specific col index or col name
+df.iloc[0,1]
+#OR
+df.iloc[0]['Set']
+
+
+                          
+#Merge and/or Concatinate and/or join operations in numpy data frame
+#Creating two data frames
+df1=pd.DataFrame({'A':['A0','A1','A2','A3'],
+                  'B':['B0','B1','B2','B3'],
+                  'C':['C0','C1','C2','C3'],
+                  'D':['D0','D1','D2','D3'],
+        }
+        )
+
+df2=pd.DataFrame({'A':['A4','A1','A2','A3'],
+                  'B':['B4','B1','B2','B3'],
+                  'C':['C4','C1','C2','C3'],
+                  'D':['D4','D1','D2','D3'],
+        }
+        )
+
+#Seeing the two data sets
+df1
+df2
+
+
+#Vertical Stacking of data
+newdata_long=pd.concat([df1,df2],axis=0) #Axis = 0 signifies row wise concatination
+newdata_long
+
+#Resetting indexes
+newdata_long.reset_index(drop=True,inplace=True)
+newdata_long
+
+
+#Adding another data set which has different set of cols
+df3=pd.DataFrame({'E':['A4','A1','A2','A3','ab'],
+                  'F':['B4','B1','B2','B3','ab'],
+                  'G':['C4','C1','C2','C3','ab'],
+                  'H':['D4','D1','D2','D3','ab'],
+        }
+        )
+
+df3
+
+
+#Concatinating with existing data frame (Horizontal stacking) #Axis = 1 signifies col wise concatination
+newdata_wide=pd.concat([df1,df3],axis=1)
+newdata_wide
+
+
+#Joins in Python
+df1=pd.DataFrame({"custid":[1,2,3,4,5],
+                  "product":["Radio","Radio","Fridge","Fridge","Phone"]
+        })
+
+df2=pd.DataFrame({"custid":[3,4,5,6,7],
+                  "product":["UP","UP","UP","MH","MH"]
+        })
+
+df1
+df2
+
+#inner join (intersection join)
+inner=pd.merge(df1,df2,on=["custid"])
+inner
+
+
+#Outer join (Union join) [i.e. all the rows would be returned from both the dfs]
+outer=pd.merge(df1,df2,on=["custid"],how="outer")
+outer
+
+
+#Left join
+left=pd.merge(df1,df2,on=["custid"],how="left")
+left
+
+#right join
+right=pd.merge(df1,df2,on=["custid"],how="right")
+right
+
+
