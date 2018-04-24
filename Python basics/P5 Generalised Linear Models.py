@@ -226,3 +226,55 @@ rmse_lm=np.sqrt(np.dot(residual,residual)/len(p_test))
 rmse_lm #We get an RMSE value of 2.16 which is pretty good
 
 
+#Getting all the coefficients
+coefs=lm.coef_
+coefs
+
+#Getting all the features 
+features=x_train.columns
+features
+
+#If we wish to get the features and the columns in a single set together, we do the following
+list(zip(features,coefs))
+
+
+#Getting the intercept of the model
+lm.intercept_ #We will get 75.88
+
+
+#Regularised form of regression
+
+#First we need to find the best value for penalty weight with cross validation for ridge regression
+alphas=np.linspace(.0001,10,100)
+#We are resetting the index for cross validation to work without hitch
+x_train.reset_index(drop=True,inplace=True)
+y_train.reset_index(drop=True,inplace=True)
+
+
+
+#We are using MSE instead of RMSE to validate our model for ridge regression
+#Importing the below for the same
+from sklearn.metrics import mean_squared_error
+
+rmse_list=[]
+for a in alphas:
+    ridge=Ridge(fit_intercept=True, alpha=a)
+    
+    #Calculating average RMSE across 10-fold cross validation
+    kf=KFold(len(x_train),n_folds=10)
+    xval_err=0
+    for train, test in kf:
+        ridge.fit(x_train.loc[train],y_train[train])
+        p=ridge.predict(x_train.loc[test])
+        #error = p - y_train[test]
+        #xval_err += np.dot(err,err)
+        xval_err += mean_squared_error()
+    
+    #rmse_10cv=np.sqrt(xval_err/len(x_train))
+    rmse_10cv=xval_err/10
+    #Uncomment below to print rmse values for individual alphas
+    #print('{:.3f}\t {:.6f}\t '.format(a,rmse_10cv))
+    rmse_list.extend([rmse_10cv])
+
+best_alpha=alphas[rmse_list==min(rmse_list)]
+print('Alpha with min 10cv error is: ',best_alpha)
