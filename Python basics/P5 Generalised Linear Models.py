@@ -278,3 +278,17 @@ for a in alphas:
 
 best_alpha=alphas[rmse_list==min(rmse_list)]
 print('Alpha with min 10cv error is: ',best_alpha)
+#We obtained the lowest alpha of 4.14147273
+
+#If you want to see the RMSE list
+rmse_list
+
+    
+#Running the ridge regression
+ridge=Ridge(fit_intercept=True,alpha=4.14147273)
+ridge.fit(x_train,y_train)
+
+
+#Using the ridge for prediction
+p=ridge.predict(x_test)
+rmse_err=math.sqrt(mean_squared_error(y_test,p))   
