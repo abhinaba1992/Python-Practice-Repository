@@ -1,3 +1,7 @@
+#Lasso helps in feature selection
+#ridge helps in removing multicollinearity
+
+
 # -*- coding: utf-8 -*-
 """
 Created on Wed Apr 11 23:46:37 2018
@@ -271,17 +275,17 @@ for a in alphas:
         xval_err += mean_squared_error()
     
     #rmse_10cv=np.sqrt(xval_err/len(x_train))
-    rmse_10cv=xval_err/10
+    mse_10cv=xval_err/10
     #Uncomment below to print rmse values for individual alphas
     #print('{:.3f}\t {:.6f}\t '.format(a,rmse_10cv))
-    rmse_list.extend([rmse_10cv])
+    mse_list.extend([mse_10cv])
 
-best_alpha=alphas[rmse_list==min(rmse_list)]
+best_alpha=alphas[rmse_list==min(mse_list)]
 print('Alpha with min 10cv error is: ',best_alpha)
 #We obtained the lowest alpha of 4.14147273
 
 #If you want to see the RMSE list
-rmse_list
+mse_list
 
     
 #Running the ridge regression
@@ -291,4 +295,59 @@ ridge.fit(x_train,y_train)
 
 #Using the ridge for prediction
 p=ridge.predict(x_test)
-rmse_err=math.sqrt(mean_squared_error(y_test,p))   
+rmse_err=math.sqrt(mean_squared_error(y_test,p))
+mse_err=mean_squared_error(y_test,p)
+
+
+rmse_err
+mse_err
+
+
+#Seeing the Coefficients
+list(zip(x_train.columns,ridge.coef_))
+
+
+#Lasso regression
+alphas=np.linspace(0.0001,1,100)
+rmse_list=[]
+for a in alphas:
+    lasso = Lasso(fit_intercept=True,alpha=a,max_iter=10000)
+    
+    #Computing RMSE using 10-fold cross validation
+    kf=KFold(len(x_train),n_folds=10)
+    xval_err=0
+    for train, test in kf:
+        lasso.fit(x_train.loc[train],y_train[train])
+        p=lasso.predict(x_train.loc[test])
+        error = p - y_train[test]
+        #xval_err += np.dot(err,err)
+        xval_err += mean_squared_error()
+    
+    #rmse_10cv=np.sqrt(xval_err/len(x_train))
+    mse_10cv=xval_err/10
+    #Uncomment below to print rmse values for individual alphas
+    #print('{:.3f}\t {:.6f}\t '.format(a,rmse_10cv))
+    mse_list.extend([mse_10cv])
+best_alpha=alphas[rmse_list==min(mse_list)]
+print('Alpha with min 10cv error is: ',best_alpha)
+
+
+
+#Prediction
+lasso=Lasso(fit_intercept=True,alpha=best_alpha)
+lasso.fit(x_train,y_train)
+
+p_test=lasso.predict(x_test)
+
+#Errors
+residual=p_test-y_test
+
+#Rmse
+rmse_lasso=np.sqrt(np.dot(residual/residual)/len(p_test))
+
+rmse_lasso
+
+
+list(zip(p_test,y_test))
+#Seeing the betas
+list(zip(x_train.columns,lasso.coef_))
