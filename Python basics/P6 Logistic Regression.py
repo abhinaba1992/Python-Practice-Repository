@@ -12,8 +12,9 @@ import warnings
 warnings.filterwarnings('ignore')#This would help us ignore all warnings
 
 #Importing logistic regression specific components
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
+from sklearn.cross_validation import train_test_split #this would help to split our data into train and test
+from sklearn.linear_model import LogisticRegression #For the logistic regression
+from sklearn.metrics import roc_auc_score #For checking the AUC score
 
 
 data_file=r'C:\Users\Abhinaba\Desktop\Edvancer Materials\Python\Data\Existing Base.csv'
@@ -205,4 +206,33 @@ bd=bd.drop(["family_income"],1)
 
 #Dropping any NAs in our data set
 bd.dropna(axis=0,inplace=True)
+
+bd.dtypes
+
+#Splitting the data into train and test
+bd_train, bd_test = train_test_split(bd,test_size=0.2,random_state=2)
+
+
+#Dropping the unecessary variables
+x_train=bd_train.drop(["y","REF_NO"],1)
+y_train=bd_train["y"]
+x_test=bd_test.drop(["y","REF_NO"],1)
+y_test=bd_test["y"]
+
+
+#Setting up or initiating the logistic regression function
+logr=LogisticRegression(penalty="11",class_weight="balanced",random_state=2)
+#class_weight="balanced" is an attribute that must be given for if our classes are imbalanced, then this param
+#would help balance out our classes. (Note that ifthe classes of the dependent variable are balanced, then we 
+#don need to give such an attribute, however it's better to give this attribute always just to be sure) 
+
+
+#Fitting the data
+logr.fit(x_train,y_train)
+
+
+#score model performance on the test data (AUC curve)
+roc_auc_score(y_test,logr.predict(x_test))
+
+
 
