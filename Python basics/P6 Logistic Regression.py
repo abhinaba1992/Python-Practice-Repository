@@ -235,4 +235,68 @@ logr.fit(x_train,y_train)
 roc_auc_score(y_test,logr.predict(x_test))
 
 
+#Finding the probability scores
+prob_score=pd.Series(list(zip(*logr.predict_proba(x_train)))[1])
+
+logr.predict_proba(x_train)
+#This will give the probability of getting 0 and 1 respectively
+
+#Viewing the probability scores
+prob_score
+
+
+#Checking the columns for the data set x train
+x_train.columns
+
+
+#Looking at the coefficients of the model
+coefs=logr.coef_
+features=x_train.columns
+list(zip(features,coefs[0]))
+
+
+#In a real world scenario, the way betas or coefficients are interpreted is that if a beta has a positive
+#value for a variable, it means that they are contributing to the dependent variable being positive(or 1),
+#while if the same is negative, then it means that the variable for that beta is contributing to the output
+#being 0.
+
+#So, for eg if in this scenario say the beta for an independent variable say home loan should have a negative 
+#value so as to imply that if a person already has a home loan, then he/she has a less probability of getting
+#a loan. Thus, the value of Beta for the home loan variable should be negative as it inversely affects the
+#propensity of getting the loan.
+
+
+#Checking the cutoffs
+#First we are initialising the probabilities
+cutoffs=np.linspace(0,1,100)
+
+
+#For each of these cutoffs, we are going to look at TP,FP,TN,FN values and calculate KS. Followed by that,
+#We would be choosing the cutoff with the highest KS.
+len([0]*len(y_train))
+
+
+KS_cut=[]
+for cutoff in cutoffs:
+    predicted=pd.Series([0]*len(y_train))
+    predicted[prob_score>cutoff]=1
+    df=pd.DataFrame(list(zip(y_train,predicted)),columns=["real","predicted"])
+    TP=len(df[  (df["real"]==1]) & (df["predicted"]==1) ])
+    FP=len(df[  (df["real"]==0]) & (df["predicted"]==1) ])
+    TN=len(df[  (df["real"]==0]) & (df["predicted"]==0) ])
+    FN=len(df[  (df["real"]==1]) & (df["predicted"]==0) ])
+    P=TP+FN
+    N=TN+FP
+    KS=(float(TP)/P)-(float(FP)/N)
+    KS_cut.append(KS)
+
+
+#Getting all the cutoffs with the KS values
+cutoff_data=pd.DataFrame(list(zip(cutoffs,KS_cut)),columns=["cutoff","KS"])
+
+#getting the cutoff for the max KS value
+KS_cutoff=cutoff_data[cutoff_data["KS"]==cutoff_data["KS"].max()]["cutoff"]    
+    
+#Checking the KS cutoff
+KS_cutoff
 
