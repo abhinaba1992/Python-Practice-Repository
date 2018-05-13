@@ -12,6 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')#This would help us ignore all warnings
 
 #Importing logistic regression specific components
+from ggplot import *
 from sklearn.cross_validation import train_test_split #this would help to split our data into train and test
 from sklearn.linear_model import LogisticRegression #For the logistic regression
 from sklearn.metrics import roc_auc_score #For checking the AUC score
@@ -299,4 +300,96 @@ KS_cutoff=cutoff_data[cutoff_data["KS"]==cutoff_data["KS"].max()]["cutoff"]
     
 #Checking the KS cutoff
 KS_cutoff
+
+
+#Visualising the KS metric data
+ggplot(aes(x='cutoff',y='KS'),data=cutoff_data)+geom_point()
+
+
+#Checking the performance of the model on the test data
+prob_score_test=pd.Series(list(zip(*logr.predict_proba(x_test)))[1])
+
+predicted_test=pd.Series([0]*len(y_test))
+predicted_test[prob_score_test>float(KS_cutoff)]=1
+
+df_test=pd.DataFrame(list(zip(y_test,predicted_test)),columns=["real","predicted"])
+
+k=pd.crosstab(df_test["real"],df_test["predicted"])
+
+
+#Printing the confusion matrix
+TN=K.iloc[0,0]
+TP=K.iloc[1,1]
+FP=K.iloc[0,1]
+FN=K.iloc[1,0]
+P=TP+FN
+N=TN+FP
+
+
+#Checking different martix
+#Accuracy on test
+float(TP+TN)/(P+N)
+
+
+#Sensitivity on test
+float(TP)/P
+
+#Specificity on test
+float(TN)/N
+
+
+#Nest we see how cutoff determined by F_beta score performs on test data for beta values: 0.5,1,2
+cutoffs=np.linspace(0.010,0.99,100)
+def Fbeta_perf(beta,cutoffs,y_train,prob_score):
+    FB_Cut=[]
+    for cutoff in cutoffs:
+        predicted=pd.Series([0]*len(y_train))
+        predicted[prob_score>cutoff]=1
+        df=pd.DataFrame(list(zip(y_train,predicted)),columns=["real","predicted"])
+        TP=len(df[  (df["real"]==1]) & (df["predicted"]==1) ])
+        FP=len(df[  (df["real"]==0]) & (df["predicted"]==1) ])
+        FN=len(df[  (df["real"]==1]) & (df["predicted"]==0) ])
+        P=TP+FN
+        
+        
+        Precision=float(TP)/(TP+FP)
+        Recall=float(TP)/P
+        FB=float((1+beta**2)*Precision*Recall)/((beta**2)*Precision+Recall)
+    
+    cutoff_data=pd.DataFrame(list(zip(cutoffs,FB_Cut)),columns=["cutoff","FB"])
+    
+    FB_cutoff=cutoff_data[cutoff_data["FB"]==cutoff_data["FB"].max()]["cutoff"]
+    
+    prob_score_test=pd.Series(list(zip(*logr.predict_proba(x_test)))[1])
+    
+    predicted_test=pd.Series([0]*len(y_test))
+    predicted_test[prob_score_test>float(FB_cutoff)]=1
+    
+    df_test=pd.DataFrame(list(zip(y_test,predicted_test)),columns=["real","predicted"])
+    
+    k=pd.crossstab(df_test["real"],df_test["predicted"])
+    
+    #Printing the confusion matrix
+    TN=K.iloc[0,0]
+    TP=K.iloc[1,1]
+    FP=K.iloc[0,1]
+    FN=K.iloc[1,0]
+    P=TP+FN
+    N=TN+FP
+    print('for Beta : 'beta)
+    print('Accuracy is : 'float(TP+TN)/(P+N))
+    print('Sensitivity is : 'float(TP)/(P))
+    print('Specificity is : 'float(TN)/(N))
+    print('Precision is : 'float(TP)/(TP+FP))
+    print('Recall is : 'float(TP)/(P))
+
+
+#Using three betas to check the values
+Fbeta_perf(0.5,cutoffs,y_train,prob_score)    
+Fbeta_perf(1,cutoffs,y_train,prob_score)
+Fbeta_perf(2,cutoffs,y_train,prob_score)
+
+
+
+
 
