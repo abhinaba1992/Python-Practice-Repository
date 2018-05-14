@@ -180,6 +180,15 @@ bd["semp_yes"]=np.where(bd["self_employed"]=="Yes",1,0)
 del bd["self_employed"]
 
 
+#Self employed partner
+bd["self_employed_partner"].value_counts()
+
+#Doing the trasnformation
+bd["semp_part_yes"]=np.where(bd["self_employed_partner"]=="Yes",1,0)
+
+del bd["self_employed_partner"]
+
+
 #Family income
 bd["family_income"].value_counts()
 
@@ -222,7 +231,7 @@ y_test=bd_test["y"]
 
 
 #Setting up or initiating the logistic regression function
-logr=LogisticRegression(penalty="11",class_weight="balanced",random_state=2)
+logr=LogisticRegression(penalty='l1',class_weight="balanced",random_state=2)
 #class_weight="balanced" is an attribute that must be given for if our classes are imbalanced, then this param
 #would help balance out our classes. (Note that ifthe classes of the dependent variable are balanced, then we 
 #don need to give such an attribute, however it's better to give this attribute always just to be sure) 
@@ -388,8 +397,3 @@ def Fbeta_perf(beta,cutoffs,y_train,prob_score):
 Fbeta_perf(0.5,cutoffs,y_train,prob_score)    
 Fbeta_perf(1,cutoffs,y_train,prob_score)
 Fbeta_perf(2,cutoffs,y_train,prob_score)
-
-
-
-
-
