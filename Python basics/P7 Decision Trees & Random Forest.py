@@ -8,6 +8,8 @@ Created on Mon May 14 10:15:08 2018
 #We are using the same example we sued for the logistic regression part, hence we are copying that entire part
 #of data importing and data preparation from logistic regression file (Only the importing of libraries is diff.)
 
+#Decision Tree
+
 import pandas as pd
 import numpy as np
 import math as ma
@@ -288,5 +290,239 @@ print('Specificity is :',TN/N)
 print('Precision is :',TP/(TP+FP))
 
 
+#Now the objective is to find the best tree size using the F2 score as the criterion for cross validation
+max_nodes=[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+max_nodes
 
 
+#We are doing cross validation here
+beta=2 #The more the beta value goes towards infinity, the F2 score becomes recall, while the more it goes
+       #towards 0, the F2 score becomes precision [(0-1):Precision,(2-infinity):Recall)
+FB_avg=[]
+for max_node  in max_nodes:
+    mytree = tree.DecisionTreeClassifier(criterion="entropy",
+                                         max_leaf_nodes=max_node,class_weight="balanced")
+
+    # computing average RMSE across 10-fold cross validation
+    kf = KFold(len(x_train), n_folds=10)
+    FB_total = []
+    for train, test in kf:
+        mytree.fit(x_train.loc[train], y_train[train])
+        p = mytree.predict(x_train.loc[test])
+        df=pd.DataFrame(list(zip(y_train,p)),columns=["real","predicted"])
+        TP=len(df[(df["real"]==1) &(df["predicted"]==1) ])
+        FP=len(df[(df["real"]==0) &(df["predicted"]==1) ])
+        TN=len(df[(df["real"]==0) &(df["predicted"]==0) ])
+        FN=len(df[(df["real"]==1) &(df["predicted"]==0) ])
+        P=TP+FN
+        N=TN+FP
+        Precision=TP/(TP+FP)
+        Recall=TP/P
+        FB=(1+beta**2)*Precision*Recall/((beta**2)*Precision+Recall)
+        FB_total.extend([FB])
+    FB_avg.extend([np.mean(FB_total)])
+best_max_node=np.array(max_nodes)[FB_avg==max(FB_avg)][0]
+
+print('max_node value with best F2 score is :',best_max_node)
+#We get 15
+
+
+
+#We are now re-running the dtree with the optimised number of max nodes we ot above (which is 15) 
+dtree=tree.DecisionTreeClassifier(criterion="entropy",
+                                  max_leaf_nodes=best_max_node,class_weight="balanced")
+dtree.fit(x_train,y_train)
+predicted=dtree.predict(x_test)
+
+df_test=pd.DataFrame(list(zip(y_test,predicted)),columns=["real","predicted"])
+
+k=pd.crosstab(df_test['real'],df_test["predicted"])
+print(k)
+
+
+#Checking the metrics
+TP=k.iloc[1,1]
+TN=k.iloc[0,0]
+FP=k.iloc[0,1]
+FN=k.iloc[1,0]
+P=TP+FN
+N=TN+FP
+
+print(TP,TN,FP,FN)
+print('Accuracy is :',(TP+TN)/(P+N))
+print('Sensitivity is :',TP/P)
+print('Specificity is :',TN/N)
+
+
+#===================================================================================================
+#===================================================================================================
+
+#Random Forest
+
+
+import numpy as np
+
+from time import time
+from operator import itemgetter
+from scipy.stats import randint as sp_randint
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.grid_search import RandomizedSearchCV
+
+
+clf = RandomForestClassifier(verbose=1,n_jobs=-1)
+#verbose=1 would let us see the intermediate outputs we can get
+#n_jobs can be passed based on the number of cores  in our CPU based on which the analysis would be
+#done, it basically considers the parallel processing capability that can be achieved, if we do not know
+#the number of cores, it's safe to set n_jobs=-1 so that it can automatically figure out the number of cores.
+
+
+#Below we have a Utility function to report the best scores. This simply accepts grid scores from our
+#randomSearchCV/GridSearchCV and picks and gives top few combination according to their scores
+#In other words the following is a helper function that gives us the rank of a model based on mean validation
+#scores for a set of parameters
+
+
+def report(grid_scores, n_top=3):
+    top_scores = sorted(grid_scores, key=itemgetter(1), reverse=True)[:n_top]
+    # above line selects top n grid scores
+    # for loop below , prints the rank, score and parameter combination
+    for i, score in enumerate(top_scores):
+        print("Model with rank: {0}".format(i + 1))
+        print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
+              score.mean_validation_score,
+              np.std(score.cv_validation_scores)))
+        print("Parameters: {0}".format(score.parameters))
+        print("")
+
+
+#In the following randomSearchCV/GridSearchCV accept parameters values as dictionaries
+#In example given below we have constructed dictionary for different parameter values
+#that we want to try for randomForest model (We are setting up the grid search parameters here)        
+
+param_dist = {"n_estimators":[10,100,500,700],
+              "max_depth": [3,5, None],
+              "max_features": sp_randint(5, 11),
+              "min_samples_split": sp_randint(5, 11),
+              "min_samples_leaf": sp_randint(5, 11),
+              "bootstrap": [True, False],
+              "criterion": ["gini", "entropy"]}
+#Total number of combinations we would get from above is 4 X 3 X 7 X 7 X 7 X 2 X 2 which would take a lot
+#of time to run and hence we would need to randomly choose certain combinations from the above
+
+
+#Running the randomized Search (We are randomly picking 100 combinations out of the above mentioned 
+#combinations)
+n_iter_search = 100
+
+
+#n_iter parameter of RandomizedSearchCV controls, how many parameter combination will be tried; out
+#of all possible given values, we are also setting the  param_distributions parameter as param_dist
+#Which contains all the combinations of parameters
+random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+                                   n_iter=n_iter_search)
+random_search.fit(x_train, y_train)
+report(random_search.grid_scores_)
+
+
+
+#Based on the best set of features we got, we are building our random forest classifier with the 
+#set of values we got from the RandomizedSearchCV function
+rf=RandomForestClassifier(n_estimators=700,verbose=1,criterion='entropy',min_samples_split=7,
+                         bootstrap=False,max_depth=None,max_features=8,min_samples_leaf=8,
+                          class_weight="balanced")
+
+
+#Fitting the entirety of our train data on the following set of values
+rf.fit(x_train,y_train)
+
+#doing the prediction on the test
+predicted=rf.predict(x_test)
+
+df_test=pd.DataFrame(list(zip(y_test,predicted)),columns=["real","predicted"])
+
+#Finding the cross tabulation between the real and the predicted
+k=pd.crosstab(df_test['real'],df_test["predicted"])
+print(k)
+
+
+#Calculating the matrix
+TP=k.iloc[1,1]
+TN=k.iloc[0,0]
+FP=k.iloc[0,1]
+FN=k.iloc[1,0]
+P=TP+FN
+N=TN+FP
+
+#Printing all the matrix
+print(TP,TN,FP,FN)
+print('Accuracy is :',(TP+TN)/(P+N))
+print('Sensitivity is :',TP/P)
+print('Specificity is :',TN/N)
+
+
+#Following we see feature importances, the way feature importance is calculated is the importance of a 
+#feature is dependent on the number of times it has been utilised for a split, so here we would get values
+#between 0.0 to 1.0, i.e. percentages of values 
+
+
+importances = rf.feature_importances_
+std = np.std([tree.feature_importances_ for tree in rf.estimators_],
+             axis=0)
+indices = np.argsort(importances)[::-1]
+
+#Print the feature ranking
+print("Feature ranking:")
+
+for f in range(x_train.shape[1]):
+    print("%d. feature %s (%f)" % (f + 1, list(x_train.columns)[f], importances[indices[f]]))
+
+#Plot the feature importance of the forest
+plt.figure()
+plt.title("Feature importances")
+plt.bar(range(x_train.shape[1]), importances[indices],
+       color="r", yerr=std[indices], align="center")
+plt.xticks(range(x_train.shape[1]), list(x_train.columns))
+plt.xlim([-1, x_train.shape[1]])
+plt.show()
+
+
+
+#Partial Dependence plot
+
+#One big difference we find in these algorithms is that we don't have straight forward coefficients associated
+#with variables. We dont have a clear picture of how a particular variable affects our response, other than 
+#saying that some variable is important and some are not
+
+#We can solve this issue by building partial dependency plot ourselves. Sklearn currently has partial dependence
+#plot support only for gradient boosting machines. However, we can implement a basic version of dependence plot
+#ourselves.
+
+
+#The idea is to fix all other variables and vary particular predictor in question and see how the predicted response
+#values move. [A better implementation will be where we randomly sample other variables instead of fixing them to
+#a fixed value but that will take a lot of time and code, so we need to keep it simple for now]
+
+
+#We'll do this for the variable Average Credit Card Transaction
+#We can try to generalise the process and even write a function if we want
+
+data=x_train.copy()
+
+features=x_train.columns
+
+for f in features:
+    if f=='Average Credit Card Transaction':pass
+    else:
+        data[f]=data[f].mean()
+
+data=data.drop_duplicates()
+data['response']=pd.Series(list(zip(*rf.predict_proba(x_train)))[1])
+
+
+
+from ggplot import *
+ggplot(data,aes(x='Average Credit Card Transaction',y='response'))+\
+geom_smooth(se=False,span=0.2)+\
+xlab("Average Credit Card Transaction")+\
+ylab('Response')+\
+ggtitle('Partial Dependence Plot \n Response Vs Average Credit Card transactions')
