@@ -503,7 +503,8 @@ plt.show()
 #a fixed value but that will take a lot of time and code, so we need to keep it simple for now]
 
 
-#We'll do this for the variable Average Credit Card Transaction
+#We'll do this for the variable children as it has one of the highest importance (We can also check the 
+#same for other variables for our reference)
 #We can try to generalise the process and even write a function if we want
 
 data=x_train.copy()
@@ -511,7 +512,7 @@ data=x_train.copy()
 features=x_train.columns
 
 for f in features:
-    if f=='Average Credit Card Transaction':pass
+    if f=='children':pass
     else:
         data[f]=data[f].mean()
 
@@ -521,8 +522,9 @@ data['response']=pd.Series(list(zip(*rf.predict_proba(x_train)))[1])
 
 
 from ggplot import *
-ggplot(data,aes(x='Average Credit Card Transaction',y='response'))+\
-geom_smooth(se=False,span=0.2)+\
-xlab("Average Credit Card Transaction")+\
+
+ggplot(data,aes(x='children',y='response'))+\
+geom_line(colour='steelblue')+\
+xlab("Children")+\
 ylab('Response')+\
-ggtitle('Partial Dependence Plot \n Response Vs Average Credit Card transactions')
+ggtitle('Partial Dependence Plot \n Response Vs Number of children')
