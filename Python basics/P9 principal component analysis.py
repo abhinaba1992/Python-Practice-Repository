@@ -8,6 +8,26 @@ Created on Sat May 26 11:01:26 2018
 #The following piece of code represents the Principal component analysis
 #and factor analysis (for PCA to work, all the variables must be of type numeric)
 
+#Outlining the Steps for PCA
+#1. Data Cleaning
+#2. Calculate the correlation matrix
+#3. Scaling of data
+#4. Initiating the PCA object (Where we need to specify the number of components)
+#5. Running the prediction for the PCA components
+#6. Checking out the Components and the variable values explained by each component
+#7. Checking the explained variance ratio
+#8. Seeing the cumulative sum of the variance ratio in order to conclude the optimal number of components
+#   we need to use
+#9. Initiating the PCA object again (With the new number of components which we would get by seeining the cumulative
+#    sum)
+#10. Running the prediction for the PCA components
+#11. Apply dimensionality reduction transformation
+#12. getting a dot product of the transformed values with the correlation matrix
+#13. Checking out the Components and the variable values explained by each component again.
+#14. Appending the findings to the main data frame
+
+
+
 #Importing all the required libraries
 import pandas as pd
 import math
@@ -116,6 +136,7 @@ plt.plot(var1)
 
 
 #Trying diff. number of components (6 components)
+#Initiating the PCA object
 pca = PCA(n_components=6)
 
 
@@ -123,8 +144,7 @@ pca = PCA(n_components=6)
 pca.fit(X)
 
 
-#This would help us to transform our data set to original values: basically it would help us to interpret which 
-#of the original 65 features are correlated to the 4 components we have in hand
+#Apply dimensionality reduction to X.
 X1=pca.transform(X)
 
 
@@ -138,7 +158,7 @@ loadings=pca.components_
 #Seeing the components 
 print(*zip(cash.columns,loadings[1,]))
 
-#Note that when better interpretation is the case, then we may not go with PCA because of the fact it tries to
+#Note that when better interpretation is the need, then we may not go with PCA because of the fact it tries to
 #merge the variability of multiple features into a single component which may not be easy to explain or interpret
 #However, when only accuracy or prediction is the scenario at hand, we can go for PCA as it gives us immense
 #improve in our performance
@@ -146,62 +166,70 @@ print(*zip(cash.columns,loadings[1,]))
 
 
 
-
 #Doing a factor analysis for dimension increment
 
+#importing/loading the libraries required for factor analysis
 from sklearn.decomposition import FactorAnalysis
 import matplotlib.pyplot as plt
 
 
-
-
+#Setting the path for the file 
 data_file='~/Dropbox/March onwards/Python Data Science/Data/cars.csv'
+
+#Reading the file 
 cars=pd.read_csv(data_file)
 
-
-
+#Checking out the shape for the same
 cars.shape
 
-
-
+#Checking some of the values
 cars.head()
 
-
-
-
+#Dropping the name column as it's an object column
 X_cars=cars.drop(['Name'],1)
 
+#Checking the shape of the data frame
+X_cars.shape
 
-
+#Performing scaling on the data set
 X_cars=scale(X_cars)
 
 
+#So, we are performing the factor analysis here based on the given number of components (NOTE that factor analysis
+#needs us to give a maximum iteration value as well coz unlike the linear approach which is a linear aljebra driven
+#approach, so there is no approximation used. However, Factor analysis is an iterative way of solving the issue and
+#it doesn't have a closed form solution coz the VARIMAX algorithm that goes on behind this doesn't have a closed 
+#form solution
+fa=FactorAnalysis(n_components=4,max_iter=1000)
 
 
-fa=FactorAnalysis(n_components=8,max_iter=1000)
-
-
-
+#We are now fitting our data onto this
 fa.fit(X_cars)
 
 
-
-
+#We are now seeing the loading components
 loadings=fa.components_
 
 
-
+#We are seeing the loading components
+#Seeing the first loading
 print(*zip(cars.columns[1:],loadings[0,]))
 
-
-
+#Seeing the Second loading
 print(*zip(cars.columns[1:],loadings[1,]))
 
+#Seeing the Third loading
+print(*zip(cars.columns[1:],loadings[2,]))
+
+#Seeing the Fourth loading
+print(*zip(cars.columns[1:],loadings[3,]))
 
 
-
+#We are now checking the noise variance
 nvar=fa.noise_variance_
 plt.plot(nvar)
-
-
-
+#We would get a line plot where we would have the column indexes in the x-axis while we would be having the noise
+#variance values
+#So from the above graph, we can conclude that ideally the variables/features for which we get high noise variance
+#should ideally be dropped from the data frame before doing factor analysis. So, we would need to do the factor 
+#analysis again after dropping the variables with high noise.
