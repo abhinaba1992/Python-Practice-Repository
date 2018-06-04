@@ -7,6 +7,8 @@ Created on Mon Jun  4 08:58:38 2018
 #This piece of code demonstrates the working of neural networks by solving a classification problem
 
 
+#CLASSICAL NEURAL NETWORKS
+
 #Importing the required libraries
 from sklearn.neural_network import MLPClassifier #Multi-layer perceptron
 import pandas as pd
@@ -115,10 +117,6 @@ for h in hidden_layer_sizes:
     for train, test in kf.split(x_train): 
         nn.fit(x_train.loc[train],y_train[train])
         p=nn.predict_proba(x_train.loc[test])[:,1]#We are now predicting the 10th part on the learning in 9 parts 
-        xval_err=roc_auc_score(y_train[test],p)  
+        auc_scr=roc_auc_score(y_train[test],p)  #Getting the auc score of each of the combinations
         
-    auc_10cv=xval_err/10 #Getting the auc score of one part out of the 10 parts
-    print(h,' : ',auc_10cv)    
-
-
-
+    print(h,' : ',auc_scr)    
