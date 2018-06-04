@@ -106,6 +106,8 @@ hidden_layer_sizes=[(20,10),(20,11),(20,12),(20,13),(20,14)]
 
 
 #Initialising an empty auc list that would capture the AUC scores of the models used across each of the
+auc_scr=[]
+
 #above mentioned hidden layers
 for h in hidden_layer_sizes:
     nn=MLPClassifier(hidden_layer_sizes=h,activation='relu')
@@ -118,5 +120,5 @@ for h in hidden_layer_sizes:
         nn.fit(x_train.loc[train],y_train[train])
         p=nn.predict_proba(x_train.loc[test])[:,1]#We are now predicting the 10th part on the learning in 9 parts 
         auc_scr=roc_auc_score(y_train[test],p)  #Getting the auc score of each of the combinations
-        
+    
     print(h,' : ',auc_scr)    
