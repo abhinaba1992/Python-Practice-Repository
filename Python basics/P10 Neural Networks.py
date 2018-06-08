@@ -122,3 +122,30 @@ for h in hidden_layer_sizes:
         auc_scr=roc_auc_score(y_train[test],p)  #Getting the auc score of each of the combinations
     
     print(h,' : ',auc_scr)    
+    
+    
+#Doing neural networks with tensor flow and keras
+    
+import tensorflow #Since at the backend, our code would be converted to the tensor flow code 
+import keras #in the front end we would be using the library keras for our coding
+from keras.datasets import mnist #this library contains the numbers hand written by users which we to identify
+from keras.models import Sequential #There are two types, one sequential/functional, we are going with sequential here
+                                    #for most purposes, we are going to use sequential when we begin
+from keras.layers import Dense, Dropout 
+#The way it works is that at each and every epoch, there are about 30% randomly selected neurons that are that are 
+#shut and the execution happens post that. Thus across multiple epochs, randomly selected neurons are shut down so
+#as to make sure that the all the neurons are given a fair chance of understanding the features and providing the output
+#and that our model isn't too dependent on any neuron or feature so as to overfit. (Dropout helps us to do this)
+
+#Dense help us to specify the type of hidden layer that we typically use in a deep learning problem, so typically
+#we use a dense layer which is a multi-layer perceptron. However, there are other types of layers as well which
+#are not being discussed here.
+
+from keras.optimizers import RMSprop #This is what gradient descent algorithm we want to use, RMSprop is a gradient
+                                 #descent algorithm here. (we have multiple options to choose from here) 
+#Importing the usual stuffs
+import numpy
+import scipy
+import sklearn
+import pandas                                    
+                                    
