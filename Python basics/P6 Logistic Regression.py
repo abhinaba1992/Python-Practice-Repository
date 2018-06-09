@@ -397,3 +397,6 @@ def Fbeta_perf(beta,cutoffs,y_train,prob_score):
 Fbeta_perf(0.5,cutoffs,y_train,prob_score)    
 Fbeta_perf(1,cutoffs,y_train,prob_score)
 Fbeta_perf(2,cutoffs,y_train,prob_score)
+
+
+
