@@ -291,10 +291,10 @@ for cutoff in cutoffs:
     predicted=pd.Series([0]*len(y_train))
     predicted[prob_score>cutoff]=1
     df=pd.DataFrame(list(zip(y_train,predicted)),columns=["real","predicted"])
-    TP=len(df[  (df["real"]==1]) & (df["predicted"]==1) ])
-    FP=len(df[  (df["real"]==0]) & (df["predicted"]==1) ])
-    TN=len(df[  (df["real"]==0]) & (df["predicted"]==0) ])
-    FN=len(df[  (df["real"]==1]) & (df["predicted"]==0) ])
+    TP=len(df[  (df["real"]==1) & (df["predicted"]==1) ])
+    FP=len(df[  (df["real"]==0) & (df["predicted"]==1) ])
+    TN=len(df[  (df["real"]==0) & (df["predicted"]==0) ])
+    FN=len(df[  (df["real"]==1) & (df["predicted"]==0) ])
     P=TP+FN
     N=TN+FP
     KS=(float(TP)/P)-(float(FP)/N)
