@@ -243,7 +243,7 @@ list(zip(features,coefs))
 
 
 #Getting the intercept of the model
-lm.intercept_ #We will get 75.88
+lm.intercept_ #We will get 75.88 (its the beta 0 term)
 
 
 #Regularised form of regression
@@ -272,7 +272,7 @@ for a in alphas:
         p=ridge.predict(x_train.loc[test])
         #error = p - y_train[test]
         #xval_err += np.dot(err,err)
-        xval_err += mean_squared_error()
+        xval_err += mean_squared_error(y_train[test],p)
     
     #rmse_10cv=np.sqrt(xval_err/len(x_train))
     mse_10cv=xval_err/10
@@ -280,7 +280,7 @@ for a in alphas:
     #print('{:.3f}\t {:.6f}\t '.format(a,rmse_10cv))
     mse_list.extend([mse_10cv])
 
-best_alpha=alphas[rmse_list==min(mse_list)]
+best_alpha=alphas[rmse_list==min(rmse_list)]
 print('Alpha with min 10cv error is: ',best_alpha)
 #We obtained the lowest alpha of 4.14147273
 
